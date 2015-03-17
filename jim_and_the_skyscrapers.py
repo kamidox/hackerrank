@@ -8,13 +8,9 @@ def valid_path(a, i, j):
     :param j: end index
     :return: 1 if it's a valid path, 0 on invalid path
     """
-    start = min(i, j)
-    end = max(i, j)
-    if a[start] != a[end]:
+    if a[i] != a[j]:
         return 0
-    if start == end:
-        return 0
-    for k in range(start, end):
+    for k in range(i, j):
         if a[k] > a[i]:
             return 0
 
@@ -27,7 +23,7 @@ def meet_constraints(a):
     :param a: array of the height of the building
     :return: True if we met the constraints
     """
-    if len(a) < 1 or len(a) >= 3 * pow(10, 5):
+    if len(a) < 1 or len(a) > 3 * pow(10, 5):
         return False
     for aa in a:
         if aa < 1 or aa > pow(10, 6):
@@ -35,20 +31,7 @@ def meet_constraints(a):
     return True
 
 
-def valid_path_count_v1(a):
-    """
-    :param a: array of the height of building
-    :return: the valid path count
-    """
-    count = 0
-    n = len(a)
-    for i in range(n):
-        for j in range(n):
-            count += valid_path(a, i, j)
-    return count
-
-
-def valid_path_count_v2(a):
+def valid_path_count(a):
     """
     :param a: array of the height of building
     :return: the valid path count
@@ -61,23 +44,34 @@ def valid_path_count_v2(a):
     return count * 2
 
 
-def profiling():
+def valid_path_count_v2(a):
     """
-    profiling the different method
-
-    :return: None
+    :param a: array of the height of building
+    :return: the valid path count
     """
-    import timeit
-
-    t = timeit.timeit(stmt='valid_path_count_v1(a)',
-                      setup='from jim_and_the_skyscrapers import valid_path_count_v1\na = [3, 2, 1, 2, 3, 3]',
-                      number=1000)
-    print(t)
-    t = timeit.timeit(stmt='valid_path_count_v2(a)',
-                      setup='from jim_and_the_skyscrapers import valid_path_count_v2\na = [3, 2, 1, 2, 3, 3]',
-                      number=1000)
-    print(t)
-
+    N = len(a)
+    S = []
+    dic = {}
+    i = 0
+    count = 0
+    while i < N:
+        if len(S) == 0 or a[S[-1]] > a[i]:
+            S.append(i)
+            if a[i] not in dic:
+                dic[a[i]] = 0
+            dic[a[i]] += 1
+        elif a[S[-1]] == a[i]:
+            if a[i] not in dic:
+                dic[a[i]] = 0
+            count += dic[a[i]]
+            dic[a[i]] += 1
+            S.append(i)
+        elif a[S[-1]] < a[i]:
+            q = S.pop()
+            dic[a[q]] -= 1
+            i -= 1
+        i += 1
+    return count * 2
 
 if __name__ == '__main__':
     path_count = 0
