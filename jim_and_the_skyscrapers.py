@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 
-def is_valid_path(a, i, j):
+def valid_path(a, i, j):
     """
     :param a: array of the height of the building
     :param i: start index
@@ -27,10 +27,10 @@ def meet_constraints(a):
     :param a: array of the height of the building
     :return: True if we met the constraints
     """
-    if len(a) < 1 or len(a) >= 3 * 10 ^ 5:
+    if len(a) < 1 or len(a) >= 3 * pow(10, 5):
         return False
     for aa in a:
-        if aa < 1 or aa > 10 ^ 6:
+        if aa < 1 or aa > pow(10, 6):
             return False
     return True
 
@@ -44,7 +44,7 @@ def valid_path_count_v1(a):
     n = len(a)
     for i in range(n):
         for j in range(n):
-            count += is_valid_path(a, i, j)
+            count += valid_path(a, i, j)
     return count
 
 
@@ -56,9 +56,8 @@ def valid_path_count_v2(a):
     count = 0
     n = len(a)
     for i in range(n):
-        for j in range(n):
-            if i < j:
-                count += is_valid_path(a, i, j)
+        for j in range(i+1, n):
+            count += valid_path(a, i, j)
     return count * 2
 
 
@@ -85,7 +84,5 @@ if __name__ == '__main__':
     num = input()
     arr = [int(v) for v in raw_input().split()]
     if num == len(arr) and meet_constraints(arr):
-        path_count = valid_path_count_v1(arr)
-        path_count_v2 = valid_path_count_v2(arr)
-        assert path_count == path_count_v2
+        path_count = valid_path_count_v2(arr)
     print(path_count)
