@@ -3,6 +3,8 @@ package com.sfox.hackerrank;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by kamidox on 15-3-21.
@@ -25,10 +27,9 @@ public class DynamicSummation {
         Vertex[] vertexes;
         int[][] edges;
 
-        // for DSF traverse
-        boolean[] visited;
         // result for Report Operation
         long sum;
+        Queue<Integer> queue = new LinkedList<Integer>();
 
         Tree(int N) {
             vertexes = new Vertex[N];
@@ -36,37 +37,20 @@ public class DynamicSummation {
                 vertexes[i] = new Vertex();
             }
             edges = new int[N-1][2];
-            visited = new boolean[N];
-        }
-
-        private void visit(int n, Visitor visitor) {
-            if (visited[n-1]) {
-                System.out.println("ERROR. This is means the tree is in loop state!");
-                return;
-            }
-            visited[n-1] = true;
-            visitor.visit(vertexes[n-1]);
-            for (int k : vertexes[n-1].children) {
-                if (vertexes[k-1].parent == n) {
-                    visit(k, visitor);
-                }
-            }
         }
 
         private void traverse(int t, Visitor visitor) {
-            for (int i = 0; i < vertexes.length; i ++) {
-                visited[i] = false;
-            }
-            visit(t, visitor);
-        }
-
-        private void setParent(int n) {
-            for (int i : vertexes[n-1].children) {
-                if (vertexes[i-1].parent == -1) {
-                    vertexes[i-1].parent = n;
-                    setParent(i);
+            queue.clear();
+            Integer n = t;
+            do {
+                visitor.visit(vertexes[n - 1]);
+                for (int k : vertexes[n - 1].children) {
+                    if (vertexes[k - 1].parent == n) {
+                        queue.offer(k);
+                    }
                 }
-            }
+                n = queue.poll();
+            } while (n != null);
         }
 
         private void createTreeFromRoot(int r) {
@@ -74,7 +58,18 @@ public class DynamicSummation {
                 vertexes[i].parent = -1;
             }
             vertexes[r-1].parent = 0;   // ROOT node's parent set to zero
-            setParent(r);
+
+            queue.clear();
+            Integer n = r;
+            do {
+                for (int i : vertexes[n-1].children) {
+                    if (vertexes[i-1].parent == -1) {
+                        vertexes[i-1].parent = n;
+                        queue.offer(i);
+                    }
+                }
+                n = queue.poll();
+            } while (n != null);
         }
 
         public void update(int r, int t, long a, long b) {
