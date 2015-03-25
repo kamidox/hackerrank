@@ -12,23 +12,21 @@ import static org.junit.Assert.*;
 public class DynamicSummationTest {
 
     public void doTest(String in, String out) throws Exception {
-        DynamicSummation ds = new DynamicSummation();
         ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
         System.setIn(new ByteArrayInputStream(in.getBytes()));
         System.setOut(new PrintStream(baos));
-        ds.main(null);
+        DynamicSummation.main(null);
         assertEquals(baos.toString().trim(), out);
     }
 
     public void doTest(FileInputStream in, FileInputStream out) throws Exception {
-        DynamicSummation ds = new DynamicSummation();
         byte[] outbuf = new byte[out.available()];
-        out.read(outbuf);
+        assertEquals(out.available(), out.read(outbuf));
         ByteArrayOutputStream baos = new ByteArrayOutputStream(out.available());
         System.setIn(in);
         System.setOut(new PrintStream(baos));
-        ds.main(null);
-        assertEquals(baos.toString().trim(), outbuf);
+        DynamicSummation.main(null);
+        assertEquals(baos.toString().trim(), new String(outbuf));
     }
 
     @Test

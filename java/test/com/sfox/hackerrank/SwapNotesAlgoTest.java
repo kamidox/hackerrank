@@ -11,11 +11,10 @@ import static org.junit.Assert.*;
 public class SwapNotesAlgoTest {
 
     public void doTest(String in, String out) {
-        SwapNotesAlgo algo = new SwapNotesAlgo();
         ByteArrayOutputStream baos = new ByteArrayOutputStream(128);
         System.setIn(new ByteArrayInputStream(in.getBytes()));
         System.setOut(new PrintStream(baos));
-        algo.main(null);
+        SwapNotesAlgo.main(null);
         assertEquals(baos.toString().trim(), out);
     }
 
